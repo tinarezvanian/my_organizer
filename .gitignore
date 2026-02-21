@@ -1,2 +1,14 @@
 *.MOV
 *.m4a
+
+# Data lives in iCloud; do not commit category folders here
+Business-Legal/
+Employment-HR/
+Home-Property/
+Learning-Books/
+Other/
+Personal/
+Photos-Media/
+Presentations/
+Resumes/
+Tesla/

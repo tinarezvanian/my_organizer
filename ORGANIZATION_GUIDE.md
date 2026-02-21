@@ -4,6 +4,19 @@ This guide defines how to organize the root of **iCloud Drive** (`~/Library/Mobi
 
 ---
 
+## Where files live (important)
+
+**All organized files (PDFs, documents, photos, etc.) belong in iCloud Drive, not in the my_organizer project.**
+
+| Location | Purpose |
+|----------|---------|
+| **iCloud Drive** — `~/Library/Mobile Documents/com~apple~CloudDocs` | **Canonical location.** All category folders (Resumes, Tesla, Home-Property, etc.) and the actual files live here. Organize, rename, and edit files **in iCloud**. |
+| **my_organizer** (e.g. `~/Developer/my_organizer`) | **Tools and docs only.** Scripts (`organize_icloud.sh`, `pdf_identify_rename.py`), guide (`ORGANIZATION_GUIDE.md`), env (`env.yml`, `requirements.txt`). Do **not** put PDFs or organized data here. |
+
+When editing or organizing PDFs (and other files), always work in **iCloud Drive**. Run the scripts **against the iCloud path** (see §4 and §8). The my_organizer repo is for version-controlled scripts and documentation; the data stays in iCloud.
+
+---
+
 ## 0. Python environment (Miniconda) — use for all Python scripts
 
 All Python tooling for this project (e.g. `pdf_identify_rename.py`) should run inside a **Miniconda** environment named **`org`** with **Python 3.13**. Install dependencies only in this env.
@@ -47,6 +60,7 @@ When running or documenting Python commands for this project:
 1. Use the **`org`** conda env with **Python 3.13**.
 2. If the env does not exist, create it with `conda env create -f env.yml` (from the project root), or `conda create -n org python=3.13 -y` then `conda activate org` and `pip install -r requirements.txt`.
 3. Before running `pdf_identify_rename.py`, ensure the env is activated: `conda activate org`.
+4. **Work in iCloud Drive only for data.** Organize, rename, and edit PDFs (and other files) in `~/Library/Mobile Documents/com~apple~CloudDocs`. Do **not** put organized files or category folders in the my_organizer project; my_organizer is for scripts and docs only.
 
 ---
 
@@ -94,9 +108,12 @@ Create these folders in the iCloud Drive root if they do not exist. Then assign 
 
 ## 4. Step-by-step instructions (for an LLM or script)
 
+**Always use the iCloud Drive path** — not the my_organizer folder. Files and category folders live in iCloud only.
+
 1. **Set the root path**  
    - `ROOT = "~/Library/Mobile Documents/com~apple~CloudDocs"`  
-   - Resolve `~` to the user’s home directory when running commands.
+   - Resolve `~` to the user’s home directory when running commands.  
+   - This is the **only** location where organized files and category folders should be created or modified.
 
 2. **List only files in the root**  
    - Ignore: hidden files, symlinks, and **all directories** (including Downloads, leetcode, etc.).
@@ -182,6 +199,8 @@ For **PDF files**, use this workflow so that files get consistent, meaningful na
 
 ### 8.2 Script reference
 
+Run **`pdf_identify_rename.py`** against **iCloud Drive** (or a category folder inside it), not against the my_organizer project. Example: `python pdf_identify_rename.py "/Users/tinarezvanian/Library/Mobile Documents/com~apple~CloudDocs/Resumes"`.
+
 The project includes **`pdf_identify_rename.py`** (Python 3), which:
 
 - Extracts the first 100 words from each PDF (using `pypdf`).
@@ -190,14 +209,17 @@ The project includes **`pdf_identify_rename.py`** (Python 3), which:
 - Gets `MMM_YY` from the file’s modification time.
 - Renames the file to `{content}_{MMM_YY}.pdf`.
 
-**Usage:** (use the **`org`** conda env with Python 3.13 — see §0.)
+**Usage:** (use the **`org`** conda env with Python 3.13 — see §0.) **Target iCloud Drive**, not my_organizer:
 
 ```bash
 conda activate org
 pip install -r requirements.txt   # one-time, if not already installed
-python pdf_identify_rename.py <path-to.pdf>
-python pdf_identify_rename.py <directory>        # all PDFs in directory
-python pdf_identify_rename.py --dry-run <path>  # print proposed names only
+# Run against iCloud path (where the PDFs actually live):
+ICLOUD="$HOME/Library/Mobile Documents/com~apple~CloudDocs"
+python pdf_identify_rename.py "$ICLOUD/Resumes"
+python pdf_identify_rename.py "$ICLOUD"           # all PDFs in iCloud root
+python pdf_identify_rename.py <path-to.pdf>       # single file in iCloud
+python pdf_identify_rename.py --dry-run <path>   # print proposed names only
 ```
 
 **When an LLM runs the script:** The script prints the path to the tmp preview file. The LLM can read that file to double-check or override the automatic content label, then rename manually if desired, or extend the script’s keyword list in `CONTENT_KEYWORDS`.
