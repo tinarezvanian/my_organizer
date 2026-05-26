@@ -46,6 +46,10 @@ Use copies under **`users/edshah/`** so the upstream `organize_icloud.sh` and `O
 |------|---------|
 | [`config.sh`](config.sh) | Sets `ICLOUD_ROOT` to ed’s iCloud path |
 | [`organize_icloud.sh`](organize_icloud.sh) | Same category logic as root script; runs against ed’s iCloud |
+| [`organize_developer.sh`](organize_developer.sh) | Groups loose dirs under `~/Developer` into Projects, Tools, Learning, etc. |
+| [`organize_projects.sh`](organize_projects.sh) | Groups flat `~/Developer/Projects/*` into conduit, ai-agents, science, … |
+| [`DEVELOPER_ORGANIZATION_GUIDE.md`](DEVELOPER_ORGANIZATION_GUIDE.md) | Layout and rules for the Developer folder |
+| [`PROJECTS_ORGANIZATION_GUIDE.md`](PROJECTS_ORGANIZATION_GUIDE.md) | Layout under `Projects/` |
 | [`my_organizer.code-workspace`](my_organizer.code-workspace) | Opens repo + ed’s iCloud root in Cursor/VS Code |
 
 ### Run folder organization
@@ -53,6 +57,8 @@ Use copies under **`users/edshah/`** so the upstream `organize_icloud.sh` and `O
 ```bash
 cd ~/Developer/my_organizer
 ./users/edshah/organize_icloud.sh
+./users/edshah/organize_developer.sh    # or --dry-run first
+./users/edshah/organize_projects.sh     # after Developer pass
 ```
 
 ### Run PDF identify/rename (shared script, ed’s iCloud path)
